@@ -1,0 +1,143 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Lab report writeup based on template by Derek Hildreth
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\documentclass[aps,letterpape,10pt]{revtex4}
+\documentclass[aps,letterpaper,10pt]{article}
+%\documentclass{article}
+
+\usepackage{graphicx} % For images
+\usepackage{float}    % For tables and other floats
+\usepackage{verbatim} % For comments and other
+\usepackage{amsmath}  % For math
+\usepackage{amssymb}  % For more math
+\usepackage{fullpage} % Set margins and place page numbers at bottom center
+\usepackage{subfig}   % For subfigures
+\usepackage[usenames,dvipsnames]{color} % For colors and names
+\usepackage{fancyhdr} %headers
+\usepackage{listings} %for code
+\usepackage{color} %to color code
+\usepackage{wrapfig} % for inline images
+
+%Color and code setup
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{codebg}{rgb}{.95,.95,.98}
+
+\lstset{ %
+	language=Python, 
+	tabsize=4, 
+	numbers=left,
+	numberstyle=\footnotesize,
+	backgroundcolor=\color{codebg},
+	breaklines=true,
+	breakatwhitespace=true,
+	basicstyle=\small,
+	numberstyle=\tiny\color{black},
+	showstringspaces=false,
+	keywordstyle=\color{blue}, 
+	stringstyle=\color{dkgreen},
+	commentstyle=\color{gray},
+	frame=single,
+	title = \texttt{\lstname}
+	}
+
+%%%%%%%%%%%%
+
+%HEADER FORMATING%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\headheight 10pt
+\setlength{\headsep}{20pt}
+\lhead{MPHY 396 - Prof. Armato\\ Homework 1}
+\rhead{A. Athanassiadis\\Due 1/11/2011}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+The file that contains the function definitions for these examples, \texttt{ball.py}, is listed in the appendix.  The specific script used to produce the output for each problem are listed with problem itself.  All images are scaled to $64\times64$\texttt{px} for viewing purposes.
+\section{Problem 1}
+\begin{figure}[!h]
+\centering
+\subfloat[]{\label{fig:1-1a}\includegraphics[width=64px]{1-1a.png}}\hfill
+\subfloat[]{\label{fig:1-1b}\includegraphics[width=64px]{1-1b.png}}\hfill
+\subfloat[]{\label{fig:1-1c}\includegraphics[width=64px]{1-1c.png}}
+\caption{Loci of Points}
+\label{1-1}
+\end{figure}
+
+Figure \ref{1-1} comprises the three $32\times32$ binary images created.  Each image was made using the \texttt{make\_ball()} function with different parameters passed to it. The parameters are tabulated in Table \ref{table:1-1}.\\
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+& Figure \ref{fig:1-1a} & Figure \ref{fig:1-1b} & Figure \ref{fig:1-1c} \\
+\hline
+Center, $(i_0,j_0)$ & (16,16) & (4,30) & (20,11) \\
+\hline
+Outer Radius, $r$ & 10 & 14 & 10 \\
+\hline
+Range of contours, $d$ & 1 & 1 & 2 \\
+\hline
+Distance Metric & $D_4$, "city block" & $D_E$, Euclidean & $D_8$ , "chessboard" \\
+\hline
+\end{tabular}
+\caption{Program Parameters}
+\label{table:1-1}
+\end{table}
+
+Figure \ref{fig:1-1a} shows the isodistance contour produced when using "city block" distance as the metric ($D_4$) .  Figure \ref{fig:1-1b}shows a contour with produced using the Euclidean metric ($D_E$), and with a shifted center.  Figure \ref{fig:1-1c} demonstrates the isodistance contour created when using the "chessboard" distance metric ($D_8$) , over a range of distances and with a shifted center.\\
+
+The isodistance contours take on very different shapes depending on the metric used and the radius chosen.  With the Euclidian metric, it forms a discrete circular ring.  Using the 4-connectivity metric, the contour depicts a diamond.  With the 8-connectivity metric, it is a square.
+When the radius is small enough, however $(r<3)$, then $D_4$ and $D_E$ provide give the same locus of points. 
+
+If the background contiguity is determined by 8-connectivity, then the $D_8$ metric is the only metric that can be used to create a single equidistant contour that separates the background into two non-contiguous regions.  However, if such a contour is made over a range of distances, ($2\leq d<r$) then all three metrics separate the background into two non-contiguous regions.
+\lstinputlisting{problem1.py}
+\newpage
+\section{Problem 2}
+\begin{figure}[!h]
+\centering
+\subfloat[$D_E$]{\label{fig:1-2a}\includegraphics[width=64px]{1-2a.png}}\hfill
+\subfloat[$D_4$]{\label{fig:1-2b}\includegraphics[width=64px]{1-2b.png}}\hfill
+\subfloat[$D_8$]{\label{fig:1-2c}\includegraphics[width=64px]{1-2c.png}}
+\caption{Distance Maps}
+\label{1-2}
+\end{figure}
+The images in Figure \ref{1-2} are distance maps created using the different metrics, calculated as distance from the center.  Darker shades represent smaller distances, and lighter shades represent larger distances.  Figure \ref{fig:1-2a} was created using the Euclidean metric. Figure \ref{fig:1-2b} was created using the "city block" metric.  Figure \ref{fig:1-2c} was created using the "chessboard" metric.
+\begin{figure}[!h]
+\centering
+\includegraphics[width=60px]{1-2d.png}
+\caption{Circular Region}
+\label{fig:1-2d}
+\end{figure} 
+
+The region in Figure \ref{fig:1-2d} was created using the distance map, Figure \ref{fig:1-2a}, binarizing the image using the threshold radius, $r=10$. The region corresponds to the run-length code in \texttt{out2.txt}.
+\lstinputlisting{out2.txt}
+\lstinputlisting{problem2.py}
+
+\newpage
+\section{Problem 3}
+\begin{figure}[!h]
+\centering
+\subfloat[Read Image]{\label{fig:1-3a}\includegraphics[width=64px]{1-3a.png}}\hfill
+\subfloat[Image and Sampling Grid]{\label{fig:1-3b}\includegraphics[width=64px]{1-3b.png}}\hfill
+\subfloat[Resampled Output]{\label{fig:1-3c}\includegraphics[width=64px]{1-3c.png}}
+\caption{Reading and Sub-sampling}
+\label{1-3}
+\end{figure}
+Figure \ref{fig:1-3a} displays the decoded input from the run-length code in Problem 2, \ref{fig:1-3b} the image with the sampling grid and \ref{fig:1-3c}, the $8\times8$ re-sampled ball.  The output quad tree code is displayed in \texttt{out3.txt}.  The quad tree code was encoded from top left across the row, and then down through the columns.
+
+\lstinputlisting{out3.txt}
+\lstinputlisting{problem3.py}
+
+\newpage
+\section{Problem 4}
+To demonstrate its capability, I had \texttt{problem4.py} use \texttt{int2bin()} to convert the digits from 0 to 16 into binary.  As an added feature, I had it pad them so they are all 4 digit binary strings.  The output is listed below:
+\lstinputlisting{out4.txt}
+\lstinputlisting{problem4.py}
+
+\newpage
+\section{Appendix: Common Code}
+Common functions used for these problems are contained in \texttt{ball.py}.  Note that \texttt{**} denotes raising to a power, and "numpy" (np) is a library which adds mathematical and matrix functionality similar to what is default in Matlab and IDL.
+\lstinputlisting{ball.py}
+
+\end{document} 

@@ -1,0 +1,70 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Lab report writeup based on template by Derek Hildreth
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\documentclass[aps,letterpape,10pt]{revtex4}
+\documentclass[aps,letterpaper,10pt]{article}
+%\documentclass{article}
+
+\usepackage{graphicx} % For images
+\usepackage{float}    % For tables and other floats
+\usepackage{verbatim} % For comments and other
+\usepackage{amsmath}  % For math
+\usepackage{amssymb}  % For more math
+\usepackage{fullpage} % Set margins and place page numbers at bottom center
+\usepackage{subfig}   % For subfigures
+\usepackage[usenames,dvipsnames]{color} % For colors and names
+\usepackage{fancyhdr} %headers
+\usepackage{listings} %for code
+\usepackage{color} %to color code
+\usepackage{wrapfig} % for inline images
+
+%Color and code setup
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{codebg}{rgb}{.95,.95,.98}
+
+\lstset{ %
+	language=Python, 
+	tabsize=4, 
+	numbers=left,
+	numberstyle=\footnotesize,
+	backgroundcolor=\color{codebg},
+	breaklines=true,
+	breakatwhitespace=true,
+	basicstyle=\small,
+	numberstyle=\tiny\color{black},
+	showstringspaces=false,
+	keywordstyle=\color{blue}, 
+	stringstyle=\color{dkgreen},
+	commentstyle=\color{gray},
+	frame=single,
+	title = \texttt{\lstname}
+	}
+
+%%%%%%%%%%%%
+
+%HEADER FORMATING%%%%%%%%%%%%%
+\pagestyle{fancy}
+\headheight 10pt
+\setlength{\headsep}{20pt}
+\lhead{MPHY 396 - Prof. Suzuki\\ Homework 7}
+\rhead{A. Athanassiadis\\Due 2/20/2012}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Custom Definitions%%%%%%%%%%%%%%%
+\newcommand{\ttt}{\texttt}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\section{Problem 1}
+\textbf{Why does the Fourier Snake work on grayscale images?}\\
+
+Consider the cost function defined as $$H = \int_{I_{in}(s)} \frac{(I(x,y)-m_{in})^2}{2\sigma^2}\,dx\,dy + \int_{I_{out}(s)} \frac{(I(x,y)-m_{out})^2}{2\sigma^2}\,dx\,dy.$$
+
+\emph{ If $m_{in}$ and $m_{out}$ are taken to be the mean gray levels of the inner and outer regions of the snake respectively, a definition which is easily reduced to the binary case, then $H$ be minimized by the boundary of the region of interest.}  
+
+Given a gray level image $I(x,y)$, suppose that the snake lay on the boundary of the region of interest, which can be taken to have the higher gray level, without loss of generality.  The boundary of the ROI is defined by a distinctive change in average gray-level, where $m_{in} - m_{out}$ exceeds the variance within each region individually.  Noting this, suppose that the snake expanded to include a portion of the background.  Then the first term in $H$ would increase because the variance over the bounded region would increase.  The second term in $H$ would decrease, but not by as much because the variance would not change much by definition.  Therefore, $H$ would increase. Similarly, if the snake were contracted the first term would barely decrease whereas the second term would increase greatly, resulting in a net increase in $H$.  Therefore, for the gray level image $I(x,y)$, the snake's minimum energy state is when it lies on the boundary of the ROI.  Note that if the boundary is not defined by a sharp drop, then the snake may include small fluctuations about the true ROI boundary.
+
+\end{document} 

@@ -1,0 +1,77 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Lab report writeup based on template by Derek Hildreth
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\documentclass[aps,letterpape,10pt]{revtex4}
+\documentclass[aps,letterpaper,10pt]{article}
+%\documentclass{article}
+
+\usepackage{graphicx} % For images
+\usepackage{float}    % For tables and other floats
+\usepackage{verbatim} % For comments and other
+\usepackage{amsmath}  % For math
+\usepackage{amssymb}  % For more math
+\usepackage{fullpage} % Set margins and place page numbers at bottom center
+\usepackage{subfig}   % For subfigures
+\usepackage[usenames,dvipsnames]{color} % For colors and names
+\usepackage{fancyhdr} %headers
+\usepackage{listings} %for code
+\usepackage{color} %to color code
+\usepackage{wrapfig} % for inline images
+
+%Color and code setup
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{codebg}{rgb}{.95,.95,.98}
+
+\lstset{ %
+	language=Python, 
+	tabsize=4, 
+	numbers=left,
+	numberstyle=\footnotesize,
+	backgroundcolor=\color{codebg},
+	breaklines=true,
+	breakatwhitespace=true,
+	basicstyle=\small,
+	numberstyle=\tiny\color{black},
+	showstringspaces=false,
+	keywordstyle=\color{blue}, 
+	stringstyle=\color{dkgreen},
+	commentstyle=\color{gray},
+	frame=single,
+	title = \texttt{\lstname}
+	}
+
+%%%%%%%%%%%%
+
+%HEADER FORMATING%%%%%%%%%%%%%
+\pagestyle{fancy}
+\headheight 10pt
+\setlength{\headsep}{20pt}
+\lhead{MPHY 396 - Prof. Suzuki\\ Homework 5}
+\rhead{A. Athanassiadis\\Due 2/13/2012}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Custom Definitions%%%%%%%%%%%%%%%
+\newcommand{\ttt}{\texttt}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\section{Problem 1}
+\begin{figure}[!h]
+\centering
+\subfloat[Original Image]{\label{fig:5-1a}\includegraphics[width=.30\textwidth]{img_distance.png}}\hspace{20px}
+\subfloat[Distance-Mapped Image]{\label{fig:5-1b}\includegraphics[width=.30\textwidth]{5-1a.png}} \hspace{20px}
+\subfloat[Overlay Image]{\label{fig:5-1c}\includegraphics[width=.30\textwidth]{5-1b.png}}
+\caption{2-Pass Distance Transform}
+\label{fig:5-1}
+\end{figure}
+
+In this problem, I applied the two-pass distance transformation as described in class.  Figure \ref{fig:5-1a} shows the original image.  Figure \ref{fig:5-1b} shows the output of the output of the distance transform.  Figure \ref{fig:5-1c} shows an overlay of the two to confirm appropriate output.  The code used for this problem is contained in \ttt{problem1.py} and \ttt{distT.py}
+
+\lstinputlisting{problem1.py}
+\newpage
+\lstinputlisting{distT.py}
+
+\end{document} 

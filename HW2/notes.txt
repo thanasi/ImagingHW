@@ -1,0 +1,1 @@
+np.fromfile('figure_problem_set_2',dtype='>i2')
