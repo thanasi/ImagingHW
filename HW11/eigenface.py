@@ -20,8 +20,8 @@ def load_faces(folder):
     for fn in filelist:
         origfaces.append(
             imread(os.path.join(folder,fn)))
-
-    origfaces = np.array(origfaces, dtype=np.int16)
+                
+    origfaces = np.array(origfaces).astype(np.int16)
 
     avgface = origfaces.sum(0) / origfaces.shape[0]
     shape = avgface.shape
@@ -34,8 +34,8 @@ def load_faces(folder):
 def eigenfaces(faces, n=None):
     '''
     eigenfaces
-        returns the first n eigenfaces calculated from an array of faces
-        which has been reduced to 2D
+        returns the first n eigenfaces (principal components)
+        calculated from an array of face which has been reduced to 2D
         
         eigenfaces are the eigenvectors of the covariance matrix of the
         faces matrix
@@ -44,46 +44,50 @@ def eigenfaces(faces, n=None):
     
     '''
     
-    C = cov(faces.T)
+    C = cov(faces.T, bias=1)
         
+    # columns in eigvecs represent individual eigenvectors
+    # that correspond to each eigenval
     eigvals, eigvecs = eig(C)
-
-    eigfaces = np.dot(faces, eigvecs).T
     
-    # sort by eigenvalue
-    eigzip = zip(eigvals, eigfaces)
-    eigzip.sort(key = lambda x: x[0])
-    
-    eigfaces = np.array([pair[1] for pair in eigzip], dtype=np.int16)[::-1]
-           
-    if n is None or n>len(eigfaces):
-        n = len(eigfaces)
+    if n is None or n>len(eigvals):
+        n = len(eigvals)
         
-    return eigfaces[:n]
+    # sort by eigenvalue (decreasing)
+    # and transpose so rows contain eigenvectors
+    eigzip = zip(eigvals, eigvecs.T)
+    eigzip.sort(key = lambda x: x[0])
+    eigenvecs_sorted = np.array([pair[1] for pair in eigzip[::-1]])
     
-def approxiface(face, eigfaces, n=None):
+    eigfaces = np.zeros((n, faces.shape[0]))
+    
+    for l in range(n):
+        for k in range(faces.shape[1]):
+            eigfaces[l] += (eigvecs[l,k] * faces[:,k])
+    
+    return eigfaces.astype(np.int16)
+    
+def approxiface(face, eigfaces, avgface, n=None):
     '''
     approxiface
         approximate a face b,ased on eigfaces
         return first n approximations
     
     '''    
-           
+
     if n is None or n>len(eigfaces):
         n = len(eigfaces)
+        
+    weights = np.zeros(n)
     
-    weights = []
-    
-    for i in range(n):
-        weights.append( (eigfaces[i] * face.flatten()).sum() )
-    
-    # normalize weights
-    weights = np.array(weights, dtype=np.float)
+    for k in range(n):
+        weights[k] = np.dot(eigfaces[k], face-avgface)
+        
     weights /= np.sqrt((weights**2).sum())
     
-    approxes = np.zeros((n,face.flatten().shape[0]))
-
-    for i in range(n):
-        approxes[i] = approxes.sum(0) + weights[i] * eigfaces[i]
-
+    approxes = np.zeros((n, eigfaces.shape[1]))
+    approxes[0] = weights[0] * eigfaces[0]
+    for k in range(1,n):
+        approxes[k] = approxes[k-1] + (weights[k] * eigfaces[k])
+    
     return approxes
