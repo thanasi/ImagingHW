@@ -7,22 +7,25 @@ outfolder = 'eigenfaces'
 outfolder2 = 'face_approx'
 
 print 'loading faces'
-facearr, shape = load_faces(infolder)
+origfaces, faces, shape = load_faces(infolder)
+
 print 'computing eigenfaces'
-eigfaces = eigenfaces(facearr, 8)
+eigfaces = eigenfaces(faces, 8)
+
 print 'saving output'
 for i in range(len(eigfaces)):
     imsave(os.path.join(outfolder,'eigenface%d.png' % i), 
            eigfaces[i].reshape(shape))
+
     
 print 'calculating approximation faces for first face'
-face = facearr[:,0]
+face = origfaces[0]
 
 fapproxes = approxiface(face, eigfaces, 5)
 
 print 'saving output'
 imsave(os.path.join(outfolder2, 'original.png'),
-       face.reshape(shape))
+       face)
 
 for i in range(len(fapproxes)):
     imsave(os.path.join(outfolder2, 'approx%d.png' % (i+1)),

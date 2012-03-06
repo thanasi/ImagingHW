@@ -4,12 +4,9 @@ import numpy as np
 from numpy.linalg import eig
 from scipy.misc import imread, imsave
 
+
 cov = np.cov
 
-def arr2vec(arr, m=0):
-    # flatten an n-dim array (arr) into a single vector with mean m
-    return arr.flatten() - arr.mean()
-    
 def load_faces(folder):
     '''
     load_faces
@@ -17,29 +14,24 @@ def load_faces(folder):
             and return reduced set of faces with shape info
     '''
     
-    filelist = np.array(os.listdir(folder))
-    acceptable = ['.tif', '.tiff', '.png', '.jpg']
+    filelist = os.listdir(folder)
+
+    origfaces = []
+    for fn in filelist:
+        origfaces.append(
+            imread(os.path.join(folder,fn)))
+
+    origfaces = np.array(origfaces, dtype=np.int16)
+
+    avgface = origfaces.sum(0) / origfaces.shape[0]
+    shape = avgface.shape
+
+    faces = np.array([(face-avgface).flatten() for face in origfaces]).T
+
+            
+    return origfaces, faces, shape
     
-    # clean filelist
-    keep = np.zeros(len(filelist), dtype=bool)
-    for ext in acceptable:
-        keep += (np.char.find(filelist, ext) >= 0)
-    
-    # load in files
-    imarr = []
-    for file_ in filelist[keep]:
-        imarr.append(imread(os.path.join(folder,file_)).astype(np.float32))
-    
-    # create single 2D matrix out of images
-    # with each image reduced to a column vector
-    imarr2 = np.array([arr2vec(im) for im in imarr]).T
-    
-    # assume all ims are same shape to make life easier
-    imshape = imarr[0].shape
-    
-    return imarr2, imshape
-    
-def eigenfaces(imarr, n=None):
+def eigenfaces(faces, n=None):
     '''
     eigenfaces
         returns the first n eigenfaces calculated from an array of faces
@@ -52,31 +44,46 @@ def eigenfaces(imarr, n=None):
     
     '''
     
-    C = cov(imarr.T)
-    
-    eigvals, eigvecs = eig(C)
+    C = cov(faces.T)
         
-    eigfaces = np.dot(imarr, eigvecs).T
+    eigvals, eigvecs = eig(C)
+
+    eigfaces = np.dot(faces, eigvecs).T
     
+    # sort by eigenvalue
+    eigzip = zip(eigvals, eigfaces)
+    eigzip.sort(key = lambda x: x[0])
+    
+    eigfaces = np.array([pair[1] for pair in eigzip], dtype=np.int16)[::-1]
+           
     if n is None or n>len(eigfaces):
         n = len(eigfaces)
-           
+        
     return eigfaces[:n]
     
 def approxiface(face, eigfaces, n=None):
     '''
     approxiface
-        approximate a face based on eigfaces
+        approximate a face b,ased on eigfaces
         return first n approximations
     
     '''    
-    
+           
     if n is None or n>len(eigfaces):
         n = len(eigfaces)
     
-    approxes = []
+    weights = []
     
     for i in range(n):
-        approxes.append(face * eigfaces[i])
-        
+        weights.append( (eigfaces[i] * face.flatten()).sum() )
+    
+    # normalize weights
+    weights = np.array(weights, dtype=np.float)
+    weights /= np.sqrt((weights**2).sum())
+    
+    approxes = np.zeros((n,face.flatten().shape[0]))
+
+    for i in range(n):
+        approxes[i] = approxes.sum(0) + weights[i] * eigfaces[i]
+
     return approxes
