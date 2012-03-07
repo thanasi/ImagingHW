@@ -26,6 +26,7 @@ def load_faces(folder):
     avgface = origfaces.sum(0) / origfaces.shape[0]
     shape = avgface.shape
 
+    # make faces to process zero-mean
     faces = np.array([(face-avgface).flatten() for face in origfaces]).T
 
             
@@ -61,6 +62,8 @@ def eigenfaces(faces, n=None):
     
     eigfaces = np.zeros((n, faces.shape[0]))
     
+    # calculate eigenfaces from eigenvectors and zero-mean faces
+    # according to Turk-Pentland
     for l in range(n):
         for k in range(faces.shape[1]):
             eigfaces[l] += (eigvecs[l,k] * faces[:,k])
@@ -80,11 +83,14 @@ def approxiface(face, eigfaces, avgface, n=None):
         
     weights = np.zeros(n)
     
+    # calculate projection on to each axis (eigenface)
     for k in range(n):
         weights[k] = np.dot(eigfaces[k], face-avgface)
         
+    # normalize so that norm(weights) = 1
     weights /= np.sqrt((weights**2).sum())
     
+    # calculate first n approximation faces
     approxes = np.zeros((n, eigfaces.shape[1]))
     approxes[0] = weights[0] * eigfaces[0]
     for k in range(1,n):
